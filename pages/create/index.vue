@@ -35,7 +35,8 @@
                             </div>
 
                             <div class="col-md-12 text-center">
-                                <b-button block variant="primary">Share Story</b-button>
+                                <b-button block variant="primary" v-if="!isLoging">Share Story</b-button>
+                                <b-spinner v-if="isLoging" variant="primary" label="Spinning"></b-spinner>
                             </div>
 
                         </div>
@@ -48,10 +49,15 @@
 
 <script>
 export default {
-  methods: {
-    push(route) {
-      this.$router.push(route)
-    }
-  }
-};
+    methods: {
+        push(route) {
+            this.$router.push(route)
+        }
+    },
+    data() {
+        return {
+            isLoging: false
+        }
+    },
+}
 </script>

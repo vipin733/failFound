@@ -1,5 +1,9 @@
-
+require('dotenv').config()
 export default {
+
+  server: {
+    port: process.env.NUXT_PORT // default: 3000
+  },
   /*
   ** Nuxt rendering mode
   ** See https://nuxtjs.org/api/configuration-mode
@@ -35,6 +39,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    '~/plugins/axios.js',
   ],
   /*
   ** Auto import components
@@ -64,6 +69,7 @@ export default {
     '@nuxt/content',
     'semantic-ui-vue/nuxt',
     'bootstrap-vue/nuxt',
+    '@nuxtjs/auth'
     
   ],
   
@@ -74,7 +80,47 @@ export default {
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {},
+  axios: {
+    baseURL: process.env.API_URL,
+    proxyHeaders: false,
+    credentials: false,
+    proxy: false // Can be also an object with default options
+  },
+
+  auth: {
+    plugins: [ { src: '~/plugins/axios', ssr: true },],
+
+    // Options
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: '/login',
+      home: '/'
+    },
+
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/api/v1/login',
+            method: 'post',
+            propertyName: 'token'
+          },
+          logout: {
+            url: '/api/v1/auth/logout',
+            method: 'post'
+          },
+          user: {
+            url: '/api/v1/auth/me',
+            method: 'get',
+            propertyName: false
+          }
+        }
+      }
+    }
+  },
+
+  
   /*
   ** Content module configuration
   ** See https://content.nuxtjs.org/configuration
