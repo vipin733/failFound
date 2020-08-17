@@ -21,7 +21,7 @@
             </b-nav-text>
 
             <b-nav-text class="mr-sm-2 pl-3" v-if="$auth.loggedIn">
-              <nuxt-link style="color:white" to="/create">Create</nuxt-link >
+              <nuxt-link style="color:white" to="/story/create">Create</nuxt-link >
             </b-nav-text>
 
 

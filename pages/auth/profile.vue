@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-12">
             <b-card
                 class="mb-2  p-2"
                 >
@@ -65,7 +65,7 @@
             </b-card>
         </div>
 
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-12">
             <b-card
                 class="mb-2  p-2"
                 >
@@ -120,7 +120,7 @@
             </b-card>
         </div>
 
-         <div class="col-md-8 offset-md-2">
+        <div class="col-md-12">
             <b-card
                 class="mb-2  p-2"
                 >
@@ -161,13 +161,6 @@
                             </div>
                         </div>
 
-                        <hr>
-                        <div class="row" v-if="!isLoading">
-                            <div class="col d-flex justify-content-center">
-                               <b-button block @click="_logout"  variant="primary">Logout</b-button>
-                            </div>
-                        </div>
-
                     </div>
                 </b-card-text>
             </b-card>
@@ -179,7 +172,7 @@
 <script>
 import Story from '~/components/main/story'
 export default {
-
+    layout: "auth",
     middleware: 'auth',
     methods: {
         push(route) {

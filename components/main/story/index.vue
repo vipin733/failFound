@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div :class="isFull ? 'col-md-12': 'col-md-8 offset-md-2'">
             <div>
                 <b-card
                 class="mb-2  p-3"
@@ -36,8 +36,7 @@
                         </div>
 
                         <div class="row">
-                            <p class="h5 font-weight-normal">
-                                {{story.content}}
+                            <p class="h5 font-weight-normal" v-html=" _content(story.content)">
                             </p>
                         </div>
                         <hr>
@@ -50,6 +49,10 @@
                                 <span class="pl-1">{{story.like_count}}</span>
                             </p>
                             <p class="h5 pl-3 text-right"> <b-icon icon="eye"></b-icon><span class="pl-1">{{story.view_count}}</span></p>
+                            <p class="h5 pl-3 text-right" v-if="$auth.loggedIn"> 
+                               <a href="#" @click.prevent="_editPush"> <b-icon icon="pencil"></b-icon></a>
+                            </p>
+
                         </div>
 
                     </b-card-text>
@@ -69,10 +72,10 @@
 import moment from 'moment'
 import CommentBox from '~/components/main/commentBox'
 import Comment from '~/components/main/comment'
-
+import convert from '~/lib/jsonToHtml'
 export default {
 
-    props:['story'],
+    props:['story', 'isFull'],
 
     components: {
         CommentBox,
@@ -80,8 +83,16 @@ export default {
     },
 
     methods: {
-        push(route) {
-            this.$router.push(route)
+
+        _content(content){
+            let html = convert(content)
+             console.log(html)
+            return html
+           
+        },
+
+        _editPush() {
+            this.$router.push('/story/edit/'+this.story.slug)
         },
 
         _createdAt(time){

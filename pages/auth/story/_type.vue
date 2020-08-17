@@ -2,11 +2,11 @@
   <div>
     <div v-if="!isLoading">
       <div  v-for="(story, index) in stories" :key="index">
-        <Story :story="story"/>
+        <Story :story="story" :isFull="true"/>
       </div>
     </div>
     <div v-else class="row">
-      <div class="col-md-8 offset-md-2">
+      <div class="col-md-12">
         <StoryLoader/>
         <StoryLoader/>
       </div>
@@ -19,18 +19,27 @@
   import StoryLoader from '~/components/main/story/storyLoader'
 
   export default {
+    layout: "auth",
+    middleware: 'auth',
+
     data() {
       return {
         stories: [],
-        isLoading: true
+        isLoading: true,
+        type: this.$route.params.type
       }
     },
+
     components:{
       Story,
       StoryLoader
     },
 
     mounted() {
+      if (this.type != 'published' && this.type != 'draft') {
+        this.$router.push({ path: '/' })
+        return
+      }
       this._getStories()
     },
 

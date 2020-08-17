@@ -33,6 +33,7 @@ export default {
   ** Global CSS
   */
   css: [
+   
   ],
   /*
   ** Plugins to load before mounting the App
@@ -40,6 +41,11 @@ export default {
   */
   plugins: [
     '~/plugins/axios.js',
+  
+    {
+      src: '~/plugins/editorjs.js', ssr: false
+    },
+    // { src: '~plugins/quill-plugin', ssr: false }
   ],
   /*
   ** Auto import components

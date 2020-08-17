@@ -10,8 +10,6 @@
                                 <p class="h3">Login</p> <br>
                             </div>
 
-                            
-                           
                             <div class="col-md-12">
                                 <input type="text" v-model="Username" ref="Username" class="form-control" 
                                 placeholder="Username or Email" id="validationCustom01" required>
