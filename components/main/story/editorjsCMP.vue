@@ -34,13 +34,14 @@
 
 <script>
 
-let List, EditorJS, Header, Paragraph, ImageTool
+let List, EditorJS, Header, Paragraph, ImageTool, Embed
 if (process.client) {
   List = require('@editorjs/list')
   EditorJS = require('@editorjs/editorjs')
   Header = require('@editorjs/header')
   Paragraph = require('@editorjs/paragraph')
   ImageTool = require('@editorjs/image')
+  Embed = require('@editorjs/embed')
 }
 import StoryStatus from '~/lib/storyStatus'
 import StoryLoader from '~/components/main/story/storyLoader'
@@ -120,7 +121,8 @@ export default {
                 'Authorization': this.$auth.getToken('local'),
               },
             }
-          }
+          },
+          embed: Embed
         },
         onReady: function() {
           // console.log("ready")

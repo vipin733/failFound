@@ -27,12 +27,12 @@ export default {
     }
   },
 
+  
   components:{
     Story
   },
 
   mounted() {
-   
     this._updateView()
   },
 
@@ -41,7 +41,6 @@ export default {
     async _updateView() {
       try {
         let res = await this.$axios.post('/api/v1/story/view/update', {ID: this.story.id})
-        
       } catch (error) {
         
       }

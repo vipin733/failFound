@@ -3,7 +3,7 @@
     <Navbar/>
     <div class="container mt-3">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3" v-if="!isMobile">
             <SideBar/>
         </div>
         <div class="col-md-8">
@@ -26,6 +26,15 @@ export default {
     Navbar,
     SideBar
   },
+
+  computed: {
+    isMobile(){
+      if (process.client) {
+        return window.innerWidth < 600
+      }
+      
+    }
+  }
 }
 </script>
 

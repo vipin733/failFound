@@ -85,10 +85,9 @@ export default {
     methods: {
 
         _content(content){
+            console.log(content)
             let html = convert(content)
-             console.log(html)
             return html
-           
         },
 
         _editPush() {
