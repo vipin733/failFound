@@ -1,65 +1,73 @@
 <template>
   <div>
-    <div v-if="!isLoading">
-      <div  v-for="(story, index) in stories" :key="index">
-        <Story :story="story" :isFull="$auth.loggedIn  ? true : false"/>
-      </div>
-    </div>
-    <div v-else class="row">
-      <div :class="$auth.loggedIn  ? 'col-md-12' : 'col-md-8 offset-md-2'">
+    <v-row
+      align="center"
+      justify="center"
+      v-if="!isLoading"
+    >
+      <v-col cols="12"  v-for="(story, index) in stories" :key="index">
+        <StoryCard :story="story" :isFull="false"/>
+      </v-col>
+    </v-row>
+
+    <v-row
+      align="center"
+      justify="center"
+      v-if="isLoading"
+    >
+      <v-col cols="12">
         <StoryLoader/>
+      </v-col>
+      <v-col cols="12">
         <StoryLoader/>
-      </div>
-    </div>
-  </div>
+      </v-col>
+    </v-row>
+
+    <DialogPopUP/>
+ </div>
 </template>
 
 <script>
-  import Story from '~/components/main/story'
-  import StoryLoader from '~/components/main/story/storyLoader'
+import NavBar from '~/components/layouts/navbar'
+import DialogPopUP from '~/components/layouts/dialogCMP'
+import StoryLoader from '../components/main/story/storyLoader'
+import StoryCard from '../components/main/story'
+export default {
 
-  export default {
+  props: {
+    source: String,
+  },
 
-    data() {
-      return {
-        stories: [],
-        isLoading: true
-      }
-    },
+  mounted(){
+    this._getStories()
+  },
 
-    components:{
-      Story,
-      StoryLoader
-    },
+  layout(context) {
+    if (context.$auth && context.$auth.loggedIn) {
+      return 'auth'
+    }
+    return 'default'
+  },
 
-    layout({$auth}) {
-     
-      if ($auth.loggedIn) {
-        return 'auth'
-      }
-      return 'default'
-    },
+  components: {
+    NavBar, DialogPopUP, StoryLoader, StoryCard
+  },
 
-    // layout: this.$auth.loggedIn ?  "auth": "default",
+  data: () => ({
+    stories: [],
+    isLoading: true
+  }),
 
-    mounted() {
-      this._getStories()
-    },
-
-    methods: {
-      async _getStories() {
-        try {
-          let res = await this.$axios.get('/api/v1/stories')
-          this.stories = res.data.data
-          this.isLoading = false
-        } catch (error) {
-          this.isLoading = false
-        }
-      },
-
-      _isCheckOnline(){
-        return this.$auth.loggedIn
+  methods: {
+    async _getStories(){
+      try {
+        let res = await this.$axios.get('/api/v1/stories')
+        this.stories = res.data.data
+        this.isLoading  = false
+      } catch (error) {
+        
       }
     }
   }
+}
 </script>

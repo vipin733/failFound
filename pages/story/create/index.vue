@@ -1,5 +1,5 @@
 <template>
-    <Editorjs :isReady="isReady"  :isSaving="isLoging" :title="title"
+    <Editorjs :isReady="isReady"   :title="title"
      :value="data" @saveData="_addHtmlEditor"/>
 </template>
 
@@ -7,6 +7,7 @@
 
 import Editorjs from '~/components/main/story/editorjsCMP'
 import errorMessage from '~/lib/errors'
+import  _changeError  from '~/lib/_changeError'
 
 export default {
     
@@ -28,21 +29,20 @@ export default {
 
         async _addHtmlEditor(data){
             try {
-                if (this.isLoging) {
-                    return
-                }
+                _changeError('success', '', this.$store)
+                this.$store.dispatch('changeLoading', true)
                 let storyData = {
                     Title:   data.title,
                     Content: data.data,
                     Status:  data.status,
                 }
                 let res = await this.$axios.post('/api/v1/story/create',storyData)
-                this.isLoging = false
+                this.$store.dispatch('changeLoading', false)
                 this.$router.push({ path: '/story/'+res.data.slug })
             } catch (error) {
-                this.isLoging = false
+                this.$store.dispatch('changeLoading', true)
                 let errMsg = errorMessage(error.response)
-                this._errorPopup('danger', 'Oops', errMsg )
+                _changeError('error', errMsg, this.$store)
             }
         }
     },
@@ -53,7 +53,7 @@ export default {
 
     data() {
         return {
-            isLoging: false,
+            isLoging:  this.$store.getters.isLoading,
             isReady: false,
             title: '',
             data: {}

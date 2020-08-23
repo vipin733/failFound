@@ -58,12 +58,9 @@ export default {
   buildModules: [
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     // '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode'
   ],
 
-  purgeCSS: {
-    whitelist: ['dark-mode'],
-  },
+
   /*
   ** Nuxt.js modules
   */
@@ -73,15 +70,12 @@ export default {
     '@nuxtjs/pwa',
     // Doc: https://github.com/nuxt/content
     '@nuxt/content',
-    'semantic-ui-vue/nuxt',
-    'bootstrap-vue/nuxt',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    '@nuxtjs/vuetify'
     
   ],
   
-  bootstrapVue: {
-    icons: true // Install the IconsPlugin (in addition to BootStrapVue plugin
-  },
+
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
@@ -98,9 +92,9 @@ export default {
 
     // Options
     redirect: {
-      login: '/login',
-      logout: '/login',
-      callback: '/login',
+      login: '/',
+      logout: '/',
+      callback: '/',
       home: '/'
     },
 

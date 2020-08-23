@@ -1,129 +1,204 @@
 <template>
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <b-card class="mb-2  p-2">
-                <b-card-text>
-                    <form class="needs-validation" novalidate>
-                        <div class="form-row">
-                            
-                            <div class="col-md-12 text-center">
-                                <p class="h3">Register</p> <br>
-                            </div>
-                           
-                           <div class="col-md-12">
-                                <input type="text" v-model="Name" ref="Name" class="form-control" placeholder="Name"  required>
-                            </div>
+    <v-card >
+        <v-card-title class="">
+          Register
+        </v-card-title>
+        <v-container>
+          <v-row class="mx-2">
+             
+                <v-col cols="12">
+                    <v-text-field
+                        prepend-icon="mdi-account"
+                        placeholder="Username"
+                        @keydown="onChange"
+                        v-model="user.Username"
+                        required
+                        :error="showError"
+                        :error-messages="showError ? 'username already taken': ''"
+                        :success="showSuccess"
+                        :success-messages="showSuccess ? 'Success' : ''"
+                        ref="Username"
+                        :clearable="true"
+                        :disabled="_isLoading"
+                        :rules="Rules.usernameRules"
+                        error-count="3"
+                    ></v-text-field>
+                </v-col>
 
-                            <div class="col-md-12">
-                                <br>
-                            </div>
-                            <div class="col-md-12">
-                                <input type="text" ref="Username" @keyup="onChange" v-model="Username" 
-                                :class="{
-                                    'form-control': true,
-                                    'is-valid': Username.length > 0 && usernameValid && !isFetching,
-                                    'is-invalid': Username.length > 0 && !usernameValid && !isFetching,
-                                }"
-                                placeholder="Username"  
-                                required>
-                                <div class="invalid-feedback">
-                                    username already taken
-                                </div>            
-                            </div>
+                <v-col cols="12"
+                >
+                    <v-text-field
+                        prepend-icon="mdi-mail"
+                        placeholder="Email"
+                        required
+                        ref="Email"
+                        :clearable="true"
+                        v-model="user.Email"
+                        :disabled="_isLoading"
+                        :rules="Rules.emailRules"
+                        error-count="2"
+                    ></v-text-field>
+                </v-col>
 
-                            
-                            <div class="col-md-12">
-                                <br>
-                            </div>
-                            <div class="col-md-12">
-                                <input type="email" ref="Email" v-model="Email" class="form-control" placeholder="Email"  required>
-                            </div>
+                <v-col cols="12"
+                >
+                    <v-text-field
+                        prepend-icon="mdi-mail"
+                        placeholder="Name"
+                        required
+                        ref="Name"
+                        v-model="user.Name"
+                        :clearable="true"
+                        :disabled="_isLoading"
+                        :rules="Rules.nameRules"
+                        error-count="3"
+                    ></v-text-field>
+                </v-col>
+            
+                <v-col  cols="12"
+                >
+                    <v-text-field
+                        prepend-icon="mdi-key"
+                        placeholder="Password"
+                        type="password"
+                        required
+                        ref="Password"
+                        v-model="user.Password"
+                        :clearable="true"
+                        :disabled="_isLoading"
+                        :rules="Rules.passwordRules"
+                        error-count="2"
+                    ></v-text-field>
+                </v-col>
 
-                            <div class="col-md-12">
-                                <br>
-                            </div>
+                <v-col  cols="12"
+                >
+                    <v-text-field
+                        prepend-icon="mdi-key"
+                        placeholder="Confirm Password"
+                        required
+                        type="password"
+                         ref="ConfirmPassword"
+                        :clearable="true"
+                        :disabled="_isLoading"
+                         v-model="user.ConfirmPassword"
+                        :rules="Rules.confirmPasswordRules"
+                        
+                        error-count="2"
+                    ></v-text-field>
+                </v-col>
 
-                            <div class="col-md-12">
-                                <input type="password" ref="Password" v-model="Password" class="form-control" placeholder="Password" required>
-                            </div>
-
-
-                            <div class="col-md-12">
-                                <br>
-                            </div>
-                            <div class="col-md-12">
-                                <input type="password" ref="ConfirmPassword" v-model="ConfirmPassword" class="form-control" placeholder="Confirm Password" required>
-                            </div>
-
-                            <div class="col-md-12">
-                                <br>
-                            </div>
-
-                            <div class="col-md-12  text-center justify-content-center">
-                                <b-button block @click="_register" v-if="!isFetching" variant="primary">Register</b-button>
-                                <b-spinner v-if="isFetching" variant="primary" label="Spinning"></b-spinner>
-                            </div>
-
-                            <div class="col-md-12 text-center">
-                                Already have account? 
-                                <nuxt-link to="/login" v-if="!isFetching">
-                                    <a href="#">Login</a>
-                                </nuxt-link>
-                                <a href="#" @click="_push" v-if="isFetching">Login</a>
-                            </div>
-
-                        </div>
-                    </form>
-                </b-card-text>
-            </b-card>
-        </div>
-    </div>
+            
+            <v-col  cols="12"
+              >
+              Already have account ? <a  @click.prevent="_changeStep" href="#">Login</a> 
+            </v-col>
+           
+          </v-row>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            @click="_register"
+            :disabled="_isLoading"
+          >Register</v-btn>
+        </v-card-actions>
+        
+    </v-card>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
 import errorMessage from '~/lib/errors'
+import Rules from '~/lib/rules'
+import  _isValid  from '~/lib/validateFunc'
+import  _changeError  from '~/lib/_changeError'
+
 
 export default {
-
+    layout: "guest",
     data() {
         return {
-            Name: '',
-            Email: '',
-            Username: '',
-            Password: '',
-            ConfirmPassword: '',
+            user: {
+                Username: '',
+                Email: '',
+                Name: '',
+                Password: '',
+                ConfirmPassword: '',
+            },
             isFetching: false,
-            usernameValid: false
+            usernameValid: false,
+            ConfirmPasswordError: false,
+            Rules
         }
     },
 
-    methods: {
-        
-        isValid(data) {
-            var isValidData = true
-            for (let i = 0; i < Object.keys(data).length; i++) {
-                if (!data[Object.keys(data)[i]]) {
-                    this.$refs[Object.keys(data)[i]].focus()
-                    isValidData = false
-                    break
-                }
-            }
-            return isValidData
-        },
-            
-        _push($event){
-            $event.preventDefault()
-            return
-        },
-        async _errorPopup(variant = null, title = "", body = "") {
-            this.$bvToast.toast(body, {
-                title: title,
-                variant: variant,
-                solid: true
-            })
+    computed: {
+
+        isLoging(){
+            return this.$store.getters.isLoading
         },
 
+
+        showError() {
+           
+            if (!this.usernameValid && !this.isFetching && this.user.Username && this.user.Username.length > 0) {
+                return true
+            }
+            return false
+        },
+
+        showSuccess() {
+            
+            if (this.usernameValid && !this.isFetching && this.user.Username &&  this.user.Username.length > 0) {
+                if (this.$refs.Username && this.$refs.Username.hasError) {
+                    return false
+                }
+                return true
+            }
+            return false
+        },
+
+        _isLoading(){
+            if (this.isFetching || this.isLoging) {
+                return true
+            }
+            return false
+        }
+    },
+
+  
+
+    methods: {
+        
+        showPasswordError(){
+            let Password = this.$refs.Password 
+            let ConfirmPassword = this.$refs.ConfirmPassword 
+            if (!Password || !ConfirmPassword) {
+                this.ConfirmPasswordError = false
+                return false
+            }
+
+            if (Password.hasError || ConfirmPassword.hasError) {
+                this.ConfirmPasswordError = false
+                return false
+            }
+
+            if (this.user.Password != this.user.ConfirmPassword ) {
+                this.ConfirmPasswordError = true
+                return false
+            }
+            this.ConfirmPasswordError = false
+        },
+
+        _changeStep(){
+            if (this.isLoging) {
+                return false
+            }
+            this.$router.push('/login')
+        },
+    
         onChange: debounce(function() {
             this._validateUsername()
         }, 1000),
@@ -131,13 +206,12 @@ export default {
         async _validateUsername() {
             try {
                 
-                if (this.isFetching) {
+                if (this.isFetching || !this.user.Username) {
                     return
                 }
-               
                 this.usernameValid = false
                 this.isFetching = true
-                await this.$axios.post('/api/v1/user/validate/username', {Username: this.Username})
+                await this.$axios.post('/api/v1/user/validate/username', {Username: this.user.Username})
                 this.usernameValid = true
                 this.isFetching = false
             } catch (error) {
@@ -148,35 +222,32 @@ export default {
 
         async _register() {
             try {
-                let data = {
-                    Name: this.Name,
-                    Email: this.Email,
-                    Username: this.Username,
-                    Password: this.Password,
-                    ConfirmPassword: this.ConfirmPassword,
-                }
-                if (!this.isValid(data)) {
+            
+                _changeError('success', '', this.$store)
+                let isValid  = _isValid(this.user, this.$refs)
+                this.showPasswordError()
+                if (this.ConfirmPasswordError) {
+                    _changeError('error', 'Password does not match', this.$store)
                     return
                 }
-                if (this.isFetching) {
+                if (this.isFetching || !isValid || this.isLoging) {
                     return
                 }
-                this.isFetching = true
-                
-                let res = await this.$axios.post('/api/v1/registration', this._data)
+                this.$store.dispatch('changeLoading', true)
+                let res = await this.$axios.post('/api/v1/registration', this.user)
                 await this.$auth.loginWith('local', {data: {
-                    Username: this.Email,
-                    Password: this.Password,
+                    Username: this.user.Email,
+                    Password: this.user.Password,
                 }})
-                this.isLoging = false
+                this.$store.dispatch('changeLoading', false)
+                _changeError('success', 'Successfully logged in', this.$store)
                 this.$router.push({ path: '/' })
-                this.isFetching = false
             } catch (error) {
-                this.isFetching = false
+                this.$store.dispatch('changeLoading', false)
                 let errMsg = errorMessage(error.response)
-                this._errorPopup('danger', 'Oops', errMsg )
+                _changeError('error', errMsg, this.$store)
             }
         }
     }
-};
+}
 </script>

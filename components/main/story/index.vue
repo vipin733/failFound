@@ -1,71 +1,48 @@
 <template>
-    <div class="row">
-        <div :class="isFull ? 'col-md-12': 'col-md-8 offset-md-2'">
-            <div>
-                <b-card
-                class="mb-2  p-3"
-                >
-                    <b-card-text>
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">
-                                    <div v-if="story && story.user && story.user.username"  >
-                                        <nuxt-link   :to="`/profile/${story.user.username}`"> 
-                                            <b-avatar  variant="info" v-if="story && story.user && story.user.avatar" 
-                                            :src="story.user.avatar"></b-avatar>
-                                            <b-avatar :text="story.user.first_last" v-else></b-avatar>
-                                        </nuxt-link >
-                                    </div>
-                                    <div>
-                                        <p v-if="story && story.user && story.user.username" class="pl-2 font-weight-bold"> 
-                                            <nuxt-link  style="color:black" :to="`/profile/${story.user.username}`">{{story && story.user ? story.user.name : ''}}</nuxt-link>
-                                            <br>{{_createdAt(story.created_at)}}</p>
-                                        <p></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col text-right">
-                                <p class="h4"><b-icon icon="arrow-up-right-square"></b-icon></p>
-                            </div>
-                        </div>
+    <v-card
+        class="mx-auto"
+    >
+        <v-list-item>
+            <v-list-item-avatar color="grey">
+                {{story.user.first_last}}
+            </v-list-item-avatar>
+            <v-list-item-content>
+                <v-list-item-title class="headline">{{story.user.name}}</v-list-item-title>
+                <v-list-item-subtitle>{{_createdAt(story.created_at)}}</v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
 
-                        <div class="row">
-                            <p class="h5 font-weight-bold">
-                                <nuxt-link  style="color:black" :to="`/story/${story.slug}`">{{story.title}}</nuxt-link>
-                            </p>
-                        </div>
+        <!-- <v-img
+            src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"
+            height="194"
+        ></v-img> -->
 
-                        <div class="row">
-                            <p class="h5 font-weight-normal" v-html=" _content(story.content)">
-                            </p>
-                        </div>
-                        <hr>
+        <v-card-text >
+           <div v-html="_content(story.content)"></div>
+        </v-card-text>
 
-                        <div class="row d-flex">
-                            <p class="h5 pl-2"> <b-icon icon="chat"></b-icon><span class="pl-1">{{story.comments_count}}</span></p>
-                            <p class="h5 pl-3"> 
-                                <a href="#" v-if="$auth.loggedIn" @click.prevent="_updateLike"><b-icon fill :icon="story.is_liked ?  'heart-fill' : 'heart'"></b-icon></a>
-                                <b-icon icon="heart" v-else></b-icon>
-                                <span class="pl-1">{{story.like_count}}</span>
-                            </p>
-                            <p class="h5 pl-3 text-right"> <b-icon icon="eye"></b-icon><span class="pl-1">{{story.view_count}}</span></p>
-                            <p class="h5 pl-3 text-right" v-if="$auth.loggedIn"> 
-                               <a href="#" @click.prevent="_editPush"> <b-icon icon="pencil"></b-icon></a>
-                            </p>
-
-                        </div>
-
-                    </b-card-text>
-                    <hr> 
-                    <CommentBox :story="story"  v-if="$auth.loggedIn" @CreatedComment="_insertComment"/>
-                    <div v-if="story.comments && story.comments.length > 0" >
-                        <Comment v-for="(comment, index) in story.comments" :comment="comment" :key="index"/>
-                    </div>
-                </b-card>
-            </div>
-        </div>
-        
-    </div>
+        <v-card-actions>
+            <v-btn
+                text
+                color="deep-purple accent-4"
+            >
+                Read
+            </v-btn>
+            <v-btn
+                text
+                color="deep-purple accent-4"
+            >
+                Bookmark
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn icon>
+                <v-icon>mdi-heart</v-icon>
+            </v-btn>
+            <v-btn icon>
+                <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+        </v-card-actions>
+    </v-card>
 </template>
 
 <script>
@@ -85,7 +62,6 @@ export default {
     methods: {
 
         _content(content){
-            console.log(content)
             let html = convert(content)
             return html
         },

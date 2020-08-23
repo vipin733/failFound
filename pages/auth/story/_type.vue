@@ -1,16 +1,6 @@
 <template>
   <div>
-    <div v-if="!isLoading">
-      <div  v-for="(story, index) in stories" :key="index">
-        <Story :story="story" :isFull="true"/>
-      </div>
-    </div>
-    <div v-else class="row">
-      <div class="col-md-12">
-        <StoryLoader/>
-        <StoryLoader/>
-      </div>
-    </div>
+    <h3>Story type</h3>
   </div>
 </template>
 

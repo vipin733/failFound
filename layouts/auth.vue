@@ -1,40 +1,83 @@
 <template>
-  <div>
-    <Navbar/>
-    <div class="container mt-3">
-      <div class="row">
-        <div class="col-md-3" v-if="!isMobile">
-            <SideBar/>
-        </div>
-        <div class="col-md-8">
-            <Nuxt />
-        </div>
-        <div class="col-md-1">
-           
-        </div>
-      </div>
-    </div>
-  </div>
+ 
+  <v-app id="inspire">
+    <ProfileMenu/>
+    <NavBar v-show="!_isSearch"/>
+    <SearchMenu v-show="_isSearch"/>
+
+    <v-main v-show="!_isSearch">
+      <v-container
+        class="fill-height"
+        
+      >
+
+      <v-row no-gutters  class="hidden-sm-and-down" v-if="!$vuetify.breakpoint.mobile"> 
+        <v-col  
+          cols="12"
+          sm="4"
+        >
+          
+          <SideBar/>
+          
+        </v-col>
+
+        <v-col  
+          cols="12"
+          sm="8"
+        >
+          <Nuxt />
+        </v-col>
+        
+      </v-row>
+
+       <v-row no-gutters  class="hidden-sm-and-up" v-if="$vuetify.breakpoint.mobile">
+         <v-col  
+          cols="12"
+        >
+          <Nuxt />
+        </v-col>
+      </v-row>
+
+      </v-container>
+    </v-main>
+    <Loader v-if="_isLoading"/>
+    <ErrorCMP v-if="_isError"/>
+  </v-app>
 </template>
 
 <script>
-import Navbar from "~/components/layouts/navbar"
+import NavBar from "~/components/layouts/navbar"
 import SideBar from "~/components/layouts/sidebar"
+
+import ProfileMenu from "~/components/layouts/profileMenu"
+import SearchMenu from "~/components/layouts/searchMenu"
+import Loader from '~/components/main/common/loader'
+import ErrorCMP from '~/components/main/common/alertCMP'
 
 export default {
   components: {
-    Navbar,
+    NavBar,
+    ProfileMenu,
+    SearchMenu,
+    Loader,
+    ErrorCMP,
     SideBar
   },
 
   computed: {
-    isMobile(){
-      if (process.client) {
-        return window.innerWidth < 600
-      }
-      
+
+    _isSearch(){
+      return this.$store.getters.isSearch
+    },
+
+    _isLoading(){
+      return this.$store.getters.isLoading
+    },
+
+    _isError(){
+      return this.$store.getters.isError
     }
-  }
+  },
 }
 </script>
 

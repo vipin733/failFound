@@ -1,16 +1,17 @@
 <template>
  
   <v-app id="inspire">
-    <ProfileMenu/>
+   
     <NavBar v-show="!_isSearch"/>
     <SearchMenu v-show="_isSearch"/>
 
     <v-main v-show="!_isSearch">
       <v-container
         class="fill-height"
+        
       >
 
-      <v-row no-gutters  class="hidden-sm-and-down" v-if="!$vuetify.breakpoint.mobile">
+      <v-row no-gutters  class="hidden-sm-and-down">
         <v-col  
           cols="12"
           sm="2"
@@ -27,17 +28,12 @@
         <v-col  
           cols="12"
           sm="2"
-        >
-        </v-col>
+        ></v-col>
         
       </v-row>
 
-      <v-row no-gutters  class="hidden-sm-and-up" v-if="$vuetify.breakpoint.mobile">
-         <v-col  
-          cols="12"
-        >
-          <Nuxt />
-        </v-col>
+       <v-row no-gutters  class="hidden-sm-and-up">
+        <Nuxt />
       </v-row>
 
       </v-container>
@@ -74,7 +70,11 @@ export default {
     },
 
     _isError(){
-      return this.$store.getters.isError
+        let data = this.$store.getters.error
+        if (data.message) {
+            return true
+        }
+        return false
     }
   },
 }

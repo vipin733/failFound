@@ -35,18 +35,11 @@
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "nuxt": "^2.13.0",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-vue": "^0.11.0",
-    "tailwindcss-dark-mode": "^1.1.4",
     "vee-validate": "^3.3.9",
-    "vue-content-loader": "^0.2.3",
     "vue-editor-js": "^2.0.1",
-    "vue-quill-editor": "^3.0.6",
-    "vue-social-sharing": "^3.0.0-beta.11",
-    "vue-sweetalert2": "^3.0.6"
+    "vue-social-sharing": "^3.0.0-beta.11"
   },
   "devDependencies": {
-    "@nuxtjs/color-mode": "^1.0.0",
-    "@nuxtjs/tailwindcss": "^2.0.0"
+    "@nuxtjs/vuetify": "^1.11.2"
   }
 }

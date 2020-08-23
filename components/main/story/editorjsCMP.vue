@@ -1,34 +1,56 @@
 <template>
-  <div class="row">
+  <div>
     
-    <div class="col-md-12"  v-show="isReady">
-      <b-card class="mb-2  p-2">
-        <b-card-text>
-          <div>
-            <input type="text" v-model="titleData" class="form-control"  placeholder="Story title" required>
-          </div>
-          <br>
-          <div class="editorx_body">
-            <div class id="codex-editor"/>
-          </div>
-          <br>
-          <div class="col-md-12 text-center">
-            <b-button @click="save(StoryStatus.Published)" block v-if="!isSaving" variant="primary">Share</b-button>
-            <b-button @click="save(StoryStatus.Draft)" block v-if="!isSaving" variant="primary">Draft</b-button>
-            <b-spinner v-if="isSaving" variant="primary" label="Spinning"></b-spinner>
-          </div>
-        </b-card-text>
-      </b-card>
-    </div>
+    <v-card  class="mb-2  p-2" v-show="isReady">
+        <v-card-title class="">
+          {{isEdit ? 'Edit Story' : 'Create Story'}}
+        </v-card-title>
+        
+        <v-container>
+          <v-row class="mx-2">
 
-    <div class="col-md-12" v-show="!isReady">
-      <b-card class="mb-2  p-2">
-        <b-card-text >
-          <StoryLoader/>
-        </b-card-text>
-      </b-card>
-    </div>
+            <v-col cols="12">
+              <v-text-field
+                placeholder="Story Title"
+                v-model="titleData"
+                ref="Username"
+                :clearable="true"
+              ></v-text-field>
+            </v-col>
 
+            <br>
+            <v-col cols="12">
+              <div class="editorx_body">
+                <div class id="codex-editor"/>
+              </div>
+            </v-col>
+            <br>
+
+            <v-col cols="12" class="text-center">
+              <v-btn
+                bottom
+                color="blue"
+                @click="save(StoryStatus.Published)" 
+                block
+                v-if="!isLoging" 
+              >Create</v-btn>
+              <br>
+              <v-btn
+                bottom
+                color="blue"
+                @click="save(StoryStatus.Draft)"  v-if="!isLoging"
+                block
+                
+              >Draft</v-btn>
+            
+            </v-col>
+         </v-row>
+        </v-container>
+        
+    </v-card>
+    
+    <StoryLoader v-show="!isReady"/>
+    
   </div>
 </template>
 
@@ -48,17 +70,24 @@ import StoryLoader from '~/components/main/story/storyLoader'
 export default {
   
   props: {
-    isSaving: Boolean,
     value: Object,
     isReady: Boolean,
-    title: String
+    title: String,
+    isEdit: Boolean
+  },
+
+  computed: {
+    isLoging(){
+      return this.$store.getters.isLoading
+    }
   },
   
   data() {
     return {
       StoryStatus,
       titleData: this.title,
-      baseUrl: this.$store.state.baseUrl
+      baseUrl: this.$store.state.baseUrl,
+      isLoading: this.$store.getters.isLoading
     }
   },
 
