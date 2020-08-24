@@ -21,8 +21,18 @@
       </v-btn>
 
       <v-btn icon @click="_changeMenue">
-        <v-avatar size="36">
+        <v-avatar size="36" v-if="!$auth.loggedIn">
           <v-icon>mdi-account-circle</v-icon>
+          
+        </v-avatar>
+        <v-avatar size="36" v-if="$auth.loggedIn">
+          <!-- <v-icon>mdi-account-circle</v-icon> -->
+          <span class="white--text headline" v-if="!$auth.user.data.avatar">{{$auth.user.data.first_last}}</span>
+            <img
+              :src="$auth.user.data.avatar"
+              :alt="$auth.user.data.name"
+              v-if="$auth.user.data.avatar"
+            >
         </v-avatar>
       </v-btn>
 
@@ -41,8 +51,10 @@ export default {
   
   methods: {
     _changeMenue(){
-      if (this.$auth.loggedIn && this.$vuetify.breakpoint.mobile) {
-        this.$store.dispatch('changeMenu')
+      if (this.$auth.loggedIn) {
+        if (this.$vuetify.breakpoint.mobile) {
+          this.$store.dispatch('changeMenu')
+        }
       }else{
         this._push('/login')
       }
@@ -67,6 +79,10 @@ export default {
       activeBtn: false,
       vuetify: this.$vuetify.theme.dark
     }
+  },
+
+  mounted(){
+    // this._changeTheme()
   },
 
   head: {

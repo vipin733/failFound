@@ -7,10 +7,10 @@
 
     <v-main v-show="!_isSearch">
       <v-container
-        class="fill-height"
+       
       >
 
-      <v-row no-gutters  class="hidden-sm-and-down" v-if="!$vuetify.breakpoint.mobile">
+      <v-row no-gutters   v-if="!$vuetify.breakpoint.mobile">
         <v-col  
           cols="12"
           sm="2"
@@ -32,7 +32,7 @@
         
       </v-row>
 
-      <v-row no-gutters  class="hidden-sm-and-up" v-if="$vuetify.breakpoint.mobile">
+      <v-row no-gutters v-if="$vuetify.breakpoint.mobile">
          <v-col  
           cols="12"
         >
@@ -42,6 +42,7 @@
 
       </v-container>
     </v-main>
+    <!-- <Footer  v-if="!$vuetify.breakpoint.mobile"/> -->
     <Loader v-if="_isLoading"/>
     <ErrorCMP v-if="_isError"/>
   </v-app>
@@ -53,6 +54,7 @@ import ProfileMenu from "~/components/layouts/profileMenu"
 import SearchMenu from "~/components/layouts/searchMenu"
 import Loader from '~/components/main/common/loader'
 import ErrorCMP from '~/components/main/common/alertCMP'
+import Footer from '~/components/layouts/footer'
 
 export default {
   components: {
@@ -60,7 +62,8 @@ export default {
     ProfileMenu,
     SearchMenu,
     Loader,
-    ErrorCMP
+    ErrorCMP,
+    Footer
   },
 
   computed: {

@@ -63,6 +63,8 @@ import Rules from '~/lib/rules'
 export default {
   
   layout: "guest",
+  auth: 'guest',
+  //  middleware: 'guest',
 
   data () {
     return {
@@ -92,7 +94,7 @@ export default {
     
     async _login() {
       try {
-         _changeError('success', '', this.$store)
+        _changeError('success', '', this.$store)
         let isValid  = _isValid(this.user, this.$refs)
        
         if (this.isLoging || !isValid) {

@@ -1,48 +1,74 @@
 <template>
-    <v-card
-        class="mx-auto"
-    >
-        <v-list-item>
-            <v-list-item-avatar color="grey">
-                {{story.user.first_last}}
-            </v-list-item-avatar>
-            <v-list-item-content>
-                <v-list-item-title class="headline">{{story.user.name}}</v-list-item-title>
-                <v-list-item-subtitle>{{_createdAt(story.created_at)}}</v-list-item-subtitle>
-            </v-list-item-content>
-        </v-list-item>
+    <div>
+        <v-card
+            class="mx-auto"
+        >
+            <v-list-item>
+                <v-list-item-avatar color="grey">
+                    {{story.user.first_last}}
+                </v-list-item-avatar>
+                <v-list-item-content>
+                    <v-list-item-title class="headline">
+                        <nuxt-link :to="_userPath(story)" style="text-decoration: blink;">{{story.user.name}}</nuxt-link>
+                    </v-list-item-title>
+                    <v-list-item-subtitle>{{_createdAt(story.created_at)}}</v-list-item-subtitle>
+                </v-list-item-content>
 
-        <!-- <v-img
-            src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"
-            height="194"
-        ></v-img> -->
+                <v-btn icon>
+                    <v-icon>mdi-share-variant</v-icon>
+                </v-btn>
+            </v-list-item>
 
-        <v-card-text >
-           <div v-html="_content(story.content)"></div>
-        </v-card-text>
+            
+            <v-card-text >
+                <a style="text-decoration: blink;" href="#" @click.prevent="_push(false)"><h3>{{story.title}}</h3></a>
+                <br>
+                <div v-html="_content(story.content)"></div>
+            </v-card-text>
 
-        <v-card-actions>
-            <v-btn
-                text
-                color="deep-purple accent-4"
-            >
-                Read
-            </v-btn>
-            <v-btn
-                text
-                color="deep-purple accent-4"
-            >
-                Bookmark
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-            </v-btn>
-            <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
-            </v-btn>
-        </v-card-actions>
-    </v-card>
+            <v-card-actions>
+                <v-btn icon @click="_updateLike">
+                    <span>{{story.like_count}}</span>
+                    <v-icon :color="story.is_liked ? 'primary' : ''" >mdi-heart</v-icon>
+                </v-btn>
+            
+                <v-btn icon class="pl-7">
+                    {{story.comments_count}}
+                    <v-icon>mdi-comment</v-icon>
+                </v-btn>
+
+                <v-btn icon class="pl-10"> 
+                    {{story.view_count}}
+                    <v-icon>mdi-eye</v-icon>
+                </v-btn>
+
+                <v-spacer></v-spacer>
+                <v-btn
+                    v-if="!isFull"
+                    @click="_push(false)"
+                    text
+                    color="deep-purple accent-4"
+                >
+                    Read More
+                </v-btn>
+                 <v-btn
+                    v-if="isFull && _allowChangeStatus"
+                    @click="_updateStatus"
+                    text
+                    color="deep-purple accent-4"
+                >
+                    Mark {{story.isDraft ? 'Published' : 'Draft'}}
+                </v-btn>
+            </v-card-actions>
+            
+        </v-card>
+        <br v-if="isFull && $auth.loggedIn">
+        <CommentBox :story="story" v-if="isFull && $auth.loggedIn" @CreatedComment="_insertComment"/>
+        <br>
+        <div v-if="isFull && story.comments && story.comments.length> 0">
+            <Comment v-for="(comment, cindex) in story.comments" :key="cindex"  @deleteComment="_deleteComment(cindex)" :comment="comment"/>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -50,13 +76,33 @@ import moment from 'moment'
 import CommentBox from '~/components/main/commentBox'
 import Comment from '~/components/main/comment'
 import convert from '~/lib/jsonToHtml'
+import errorMessage from '~/lib/errors'
+import  _changeError  from '~/lib/_changeError'
 export default {
 
-    props:['story', 'isFull'],
+    props:['story', 'isFull', 'isEdit', 'isAuth'],
 
     components: {
         CommentBox,
         Comment
+    },
+
+    mounted(){
+        console.log(this.story)
+    },
+
+    computed:{
+        _allowChangeStatus(){
+            if (!this.$auth.loggedIn) {
+                return false
+            }
+
+            if (this.$auth.user.data.id != this.story.user.id) {
+                return false
+            }
+            return true
+            
+        }
     },
 
     methods: {
@@ -66,8 +112,26 @@ export default {
             return html
         },
 
-        _editPush() {
-            this.$router.push('/story/edit/'+this.story.slug)
+        _userPath(story){
+            if (this.$auth.loggedIn) {
+                if (story.user.id == this.$auth.user.data.id) {
+                    return '/auth/me/'+story.user.username
+                }
+            }
+
+            return '/profile/'+story.user.username
+        },
+
+        _push(isEdit = false) {
+            if (isEdit) {
+                this.$router.push('/story/edit/'+this.story.slug)
+                return
+            }
+            if (this.isAuth) {
+                this.$router.push('/story/'+this.story.slug+"?source=auth")
+                return
+            }
+            this.$router.push('/story/'+this.story.slug)
         },
 
         _createdAt(time){
@@ -83,6 +147,15 @@ export default {
             }
             this.story.comments_count++
         },
+
+        _deleteComment(index) {
+            let comments = [...this.story.comments]
+            delete comments[index]
+            this.story.comments = comments
+            this.story.comments_count--
+        },
+
+       
         
         async _updateLike(){
             try {
@@ -102,7 +175,31 @@ export default {
             } catch (error) {
                 
             }
+        },
+
+        async _updateStatus(){
+            try {
+                let isLoading = this.$store.getters.isLoading
+                console.log(isLoading)
+                if (isLoading) {
+                    return
+                }
+                _changeError('success', '', this.$store)
+                let data = {
+                    Published: this.story.isDraft ? true : false
+                }
+                this.$store.dispatch('changeLoading', true)
+                let res = await this.$axios.post('/api/v1/story/update/status/'+this.story.id, data )
+                this.story.isDraft = !this.story.isDraft
+                this.$store.dispatch('changeLoading', false)
+                let msg = "successfully marked " + this.story.isDraft ? 'draft' : 'published'
+                _changeError('success', msg , this.$store)
+            } catch (error) {
+                this.$store.dispatch('changeLoading', false)
+                let errMsg = errorMessage(error.response)
+                _changeError('error', errMsg, this.$store)
+            }
         }
     }
-};
+}
 </script>

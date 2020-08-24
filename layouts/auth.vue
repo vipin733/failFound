@@ -42,6 +42,7 @@
     </v-main>
     <Loader v-if="_isLoading"/>
     <ErrorCMP v-if="_isError"/>
+    <!-- <Footer  v-if="!$vuetify.breakpoint.mobile"/> -->
   </v-app>
 </template>
 
@@ -53,7 +54,7 @@ import ProfileMenu from "~/components/layouts/profileMenu"
 import SearchMenu from "~/components/layouts/searchMenu"
 import Loader from '~/components/main/common/loader'
 import ErrorCMP from '~/components/main/common/alertCMP'
-
+import Footer from '~/components/layouts/footer'
 export default {
   components: {
     NavBar,
@@ -61,7 +62,8 @@ export default {
     SearchMenu,
     Loader,
     ErrorCMP,
-    SideBar
+    SideBar,
+    Footer
   },
 
   computed: {

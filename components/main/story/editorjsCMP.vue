@@ -1,13 +1,13 @@
 <template>
   <div>
     
-    <v-card  class="mb-2  p-2" v-show="isReady">
+    <v-card  v-show="isReady">
         <v-card-title class="">
           {{isEdit ? 'Edit Story' : 'Create Story'}}
         </v-card-title>
         
         <v-container>
-          <v-row class="mx-2">
+          <v-row >
 
             <v-col cols="12">
               <v-text-field
@@ -172,7 +172,7 @@ export default {
 <style lang="css" scoped >
 .editorx_body {
   width: 100%;
-  border: 2px solid #f1f3f5;
+  /* border: 2px solid #f1f3f5; */
   box-sizing: border-box;
 }
 .ce-block--focused {

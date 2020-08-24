@@ -19,7 +19,7 @@ export default {
   ** See https://nuxtjs.org/api/configuration-head
   */
   head: {
-    title: process.env.npm_package_name || '',
+    title: 'FailFound | Space For Fail Founder',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -41,12 +41,21 @@ export default {
   */
   plugins: [
     '~/plugins/axios.js',
+    // '~/plugins/vuetify.js',
   
     {
       src: '~/plugins/editorjs.js', ssr: false
     },
     // { src: '~plugins/quill-plugin', ssr: false }
   ],
+
+  vuetify: {
+    theme: {
+      // default theme is light mode
+      dark: true,
+    }
+  },
+
   /*
   ** Auto import components
   ** See https://nuxtjs.org/api/configuration-components

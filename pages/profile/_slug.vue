@@ -1,13 +1,20 @@
 <template>  
-  <div>
-      <h3>Public profile</h3>
-  </div>
+  <ProfileCMP :user="user" :slug="slug"/>
 </template>
 
 <script>
 import moment from "moment"
+import ProfileCMP from '~/components/main/user/profile'
 export default {
    
+    layout(context) {
+      if (context.$auth && context.$auth.loggedIn) {
+        return 'auth'
+      }
+      return 'default'
+    },
+
+    components:{ProfileCMP},
     async asyncData ({ params, error, store }) {
       try {
         let slug = params.slug

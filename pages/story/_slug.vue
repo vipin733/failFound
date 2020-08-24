@@ -1,6 +1,6 @@
 <template> 
   <div>
-    <Story :story="story" :edit="true"/>
+    <Story :story="story" :isEdit="false" :isFull="true" :isAuth="source"/>
   </div>
 </template>
 
@@ -11,17 +11,20 @@ import Story from '~/components/main/story'
 
 export default {
 
-  async asyncData ({ params, error, store }) {
+  async asyncData ({ params, error, store, query }) {
     try {
       let slug = params.slug
-      let res = await store.$axios.get('/api/v1/story/'+slug)
+      let source = query.source
+      let res = await store.$axios.get('/api/v1/story/'+slug+"?source="+source)
       return {
         slug: params.slug,
-        story: res.data.data
+        story: res.data.data,
+        source: source ? true : false
       }
     } catch (error) {
       return {
         slug: '',
+        source: false,
         story: {}
       }
     }

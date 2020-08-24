@@ -1,50 +1,80 @@
 <template>
-    
-    <div class="d-flex">
+    <div class="pt-1" v-if="comment">
         
-        <div class="col-md-12">
-            <div class="row"> 
-                <div class="col-md-3" style="display: flex;">
-                    <div v-if="comment && comment.user && comment.user.username"  >
-                        <nuxt-link   :to="`/profile/${comment.user.username}`"> 
-                            <b-avatar  variant="info" v-if="comment && comment.user && comment.user.avatar" 
-                            :src="comment.user.avatar"></b-avatar>
-                            <b-avatar :text="comment.user.first_last" v-else></b-avatar>
-                        </nuxt-link >
-                    </div>
-                    <div>
-                        <p v-if="comment && comment.user && comment.user.username" class="pl-2 font-weight-bold"> 
-                            <nuxt-link  style="color:black" :to="`/profile/${comment.user.username}`">{{comment && comment.user ? comment.user.name : ''}}</nuxt-link>
-                            <br>{{_createdAt(comment.created_at)}}</p>
-                        <p></p>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <p>{{comment.comment}}</p>
-                </div>
-            </div>
-        </div>
-        
+        <v-card
+            class="mx-auto"
+        >
+            <v-list-item>
+                <v-list-item-avatar color="grey">
+                    {{comment.user.first_last}}
+                </v-list-item-avatar>
+                <v-list-item-content>
+                    <v-list-item-title class="headline">{{comment.user.name}}</v-list-item-title>
+                    <v-list-item-subtitle>{{_createdAt(comment.created_at)}}</v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
+
+            
+            <v-card-text >
+                {{comment.comment}}
+            </v-card-text>
+
+            <v-card-actions v-if="_isMe">
+                <v-btn icon @click="_deleteComment">
+                    <v-icon >mdi-delete</v-icon>
+                </v-btn>
+            </v-card-actions>
+            
+        </v-card>
     </div>
-   
 </template>
 
 <script>
 import moment from 'moment'
+import errorMessage from '~/lib/errors'
+import  _changeError  from '~/lib/_changeError'
 export default {
 
     props:['comment'],
 
+    computed: {
+        _isMe(){
+            if (this.$auth.loggedIn) {
+                if (this.comment.user.id == this.$auth.user.data.id) {
+                    return true
+                }
+            }
+
+            return false
+        }
+    },
+
     methods: {
-        push(route) {
-            this.$router.push(route)
-        },
 
         _createdAt(time){
             return moment(time).utcOffset('+0530').fromNow()
         },
-        
-       
+
+            
+        async _deleteComment(){
+            try {
+                if (!this.$auth.loggedIn) {
+                    return
+                }
+                _changeError('success', '', this.$store)
+                this.$store.dispatch('changeLoading', true)
+                let data = {
+                    CommentID: this.comment.id
+                }
+                await this.$axios.post('/api/v1/story/comment/delete', data )
+                this.$store.dispatch('changeLoading', false)
+                this.$emit('deleteComment')
+            } catch (error) {
+                let errMsg = errorMessage(error.response)
+                this.$store.dispatch('changeLoading', false)
+                _changeError('error', errMsg, this.$store)
+            }
+        }
     }
-};
+}
 </script>

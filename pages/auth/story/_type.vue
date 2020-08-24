@@ -1,13 +1,35 @@
 <template>
   <div>
-    <h3>Story type</h3>
-  </div>
+    <v-row
+      align="center"
+      justify="center"
+      v-if="!isLoading"
+    >
+      <v-col cols="12"  v-for="(story, index) in stories" :key="index">
+        <StoryCard :story="story" :isFull="false" :isAuth="true" :isEdit="false"/>
+      </v-col>
+    </v-row>
+    <v-row
+      align="center"
+      justify="center"
+      v-if="isLoading"
+    >
+      <v-col cols="12">
+        <StoryLoader/>
+      </v-col>
+      <v-col cols="12">
+        <StoryLoader/>
+      </v-col>
+     
+    </v-row>
+    <NoData v-if="!isLoading &&  stories.length == 0"/>
+ </div>
 </template>
 
 <script>
-  import Story from '~/components/main/story'
+  import StoryCard from '~/components/main/story'
   import StoryLoader from '~/components/main/story/storyLoader'
-
+  import NoData from '~/components/main/common/noData'
   export default {
     layout: "auth",
     middleware: 'auth',
@@ -21,8 +43,9 @@
     },
 
     components:{
-      Story,
-      StoryLoader
+      StoryCard,
+      StoryLoader,
+      NoData
     },
 
     mounted() {
@@ -36,8 +59,8 @@
     methods: {
       async _getStories() {
         try {
-          let res = await this.$axios.get('/api/v1/stories')
-          this.stories = res.data.data
+          let res = await this.$axios.post('/api/v1/auth/stories', {Type:this.type})
+          this.stories = res.data.data ? res.data.data : []
           this.isLoading = false
         } catch (error) {
           this.isLoading = false

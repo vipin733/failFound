@@ -4,6 +4,22 @@
     max-width="300"
     tile
   >
+   <v-subheader v-if="$vuetify.breakpoint.mobile"></v-subheader >
+
+   <v-row align="center"
+   v-if="$vuetify.breakpoint.mobile && $auth.user && $auth.user.data"
+      justify="center"> 
+      <v-avatar color="primary" size="62">
+        <span class="white--text headline" v-if="!$auth.user.data.avatar">{{$auth.user.data.first_last}}</span>
+        <img
+          :src="$auth.user.data.avatar"
+          :alt="$auth.user.data.name"
+          v-if="$auth.user.data.avatar"
+        >
+      </v-avatar>
+   </v-row>
+
+
     <v-list rounded>
       <v-subheader></v-subheader>
       <v-list-item-group v-model="item" color="primary">
@@ -56,14 +72,25 @@
       ],
     }),
 
+    mounted(){
+    },
+
     methods: {
       async _logout(){
-        this.$store.dispatch('changeMenu')
+        if (this.$vuetify.breakpoint.mobile) {
+          this.$store.dispatch('changeMenu')
+        }
         await this.$auth.logout()
+        if (location != 'undefind') {
+          location.reload()
+        }
+        
       },
 
       _push(route){
-        this.$store.dispatch('changeMenu')
+        if (this.$vuetify.breakpoint.mobile) {
+          this.$store.dispatch('changeMenu')
+        }
         this.$router.push(route)
       }
     }

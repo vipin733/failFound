@@ -6,7 +6,7 @@
       v-if="!isLoading"
     >
       <v-col cols="12"  v-for="(story, index) in stories" :key="index">
-        <StoryCard :story="story" :isFull="false"/>
+        <StoryCard :story="story" :isFull="false" :isEdit="false"/>
       </v-col>
     </v-row>
 
@@ -30,15 +30,14 @@
 <script>
 import NavBar from '~/components/layouts/navbar'
 import DialogPopUP from '~/components/layouts/dialogCMP'
-import StoryLoader from '../components/main/story/storyLoader'
-import StoryCard from '../components/main/story'
+import StoryLoader from '~/components/main/story/storyLoader'
+import StoryCard from '~/components/main/story'
+import  _changeError  from '~/lib/_changeError'
+
 export default {
 
-  props: {
-    source: String,
-  },
-
   mounted(){
+    _changeError('success', '', this.$store)
     this._getStories()
   },
 
