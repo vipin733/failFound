@@ -19,14 +19,6 @@ export default {
 
     methods: {
 
-        async _errorPopup(variant = null, title = "", body = "") {
-            this.$bvToast.toast(body, {
-                title: title,
-                variant: variant,
-                solid: true
-            })
-        },
-
         async _addHtmlEditor(data){
             try {
                 _changeError('success', '', this.$store)
@@ -38,7 +30,7 @@ export default {
                 }
                 let res = await this.$axios.post('/api/v1/story/create',storyData)
                 this.$store.dispatch('changeLoading', false)
-                this.$router.push({ path: '/story/'+res.data.slug })
+                this.$router.push({ path: '/story/'+res.data.slug + '?source=auth'})
             } catch (error) {
                 this.$store.dispatch('changeLoading', true)
                 let errMsg = errorMessage(error.response)

@@ -2,6 +2,7 @@
 import DialogStep from '~/lib/DialogStep'
 export const state = () => ({
     baseUrl: process.env.API_URL,
+    webUrl: process.env.BASE_URL,
     isOpen: false,
     isSearch: false,
     isOpenDialog: false,

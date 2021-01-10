@@ -14,9 +14,10 @@
                     <v-list-item-subtitle>{{_createdAt(story.created_at)}}</v-list-item-subtitle>
                 </v-list-item-content>
 
-                <v-btn icon>
+                <v-btn icon @click="isShare = true">
                     <v-icon>mdi-share-variant</v-icon>
                 </v-btn>
+
             </v-list-item>
 
             
@@ -42,12 +43,17 @@
                     <v-icon>mdi-eye</v-icon>
                 </v-btn>
 
+                 <v-btn icon class="pl-10" v-if="_isMe && isFull" @click="_push(true)"> 
+                    <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+
+
                 <v-spacer></v-spacer>
                 <v-btn
                     v-if="!isFull"
                     @click="_push(false)"
                     text
-                    color="deep-purple accent-4"
+                    color="primary"
                 >
                     Read More
                 </v-btn>
@@ -55,7 +61,7 @@
                     v-if="isFull && _allowChangeStatus"
                     @click="_updateStatus"
                     text
-                    color="deep-purple accent-4"
+                    color="primary"
                 >
                     Mark {{story.isDraft ? 'Published' : 'Draft'}}
                 </v-btn>
@@ -68,27 +74,49 @@
         <div v-if="isFull && story.comments && story.comments.length> 0">
             <Comment v-for="(comment, cindex) in story.comments" :key="cindex"  @deleteComment="_deleteComment(cindex)" :comment="comment"/>
         </div>
+        <ShareDialop 
+            v-if="isShare" 
+            @closeShare="isShare = false"
+            :url="url"
+            :title="story.title"
+            :description="story.title"
+            quote=""
+            hashtags="founder,story"
+        />
     </div>
 </template>
 
 <script>
 import moment from 'moment'
 import CommentBox from '~/components/main/commentBox'
+import ShareDialop from '~/components/main/story/shareDialop'
 import Comment from '~/components/main/comment'
 import convert from '~/lib/jsonToHtml'
 import errorMessage from '~/lib/errors'
 import  _changeError  from '~/lib/_changeError'
+let url
+if (process.client) {
+    url =  window.location.href 
+}
 export default {
 
     props:['story', 'isFull', 'isEdit', 'isAuth'],
-
+   
     components: {
         CommentBox,
-        Comment
+        Comment,
+        ShareDialop
     },
 
     mounted(){
-        console.log(this.story)
+        console.log(this.url)
+    },
+
+    data(){
+        return {
+            isShare: false,
+            url
+        }
     },
 
     computed:{
@@ -102,7 +130,18 @@ export default {
             }
             return true
             
-        }
+        },
+
+        _isMe(){
+            if (!this.$auth.loggedIn) {
+                return false
+            }
+
+            if (this.$auth.user.data.id == this.story.user.id) {
+                return true
+            }
+            return false
+        },
     },
 
     methods: {
@@ -155,8 +194,6 @@ export default {
             this.story.comments_count--
         },
 
-       
-        
         async _updateLike(){
             try {
                 if (!this.$auth.loggedIn) {

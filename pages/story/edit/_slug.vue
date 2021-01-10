@@ -1,6 +1,7 @@
 <template> 
   <div>
-    <Editorjs :isReady="isReady"  :key="editkey" :title="title" :isSaving="isLoging" :value="data" @saveData="_updateHtmlEditor"/>
+    <Editorjs :isReady="isReady"  :key="editkey"  :title="title"
+     :value="data" @saveData="_updateHtmlEditor"/>
   </div>
 </template>
 
@@ -46,7 +47,7 @@ export default {
     async _getStory(){
       try {
         let slug = this.slug
-        let res = await this.$axios.get('/api/v1/story/'+slug)
+        let res = await this.$axios.get('/api/v1/story/'+slug+'?source=auth')
         let story = res.data.data
         this.story = story
         this.title = story.title

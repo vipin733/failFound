@@ -30,6 +30,13 @@ export default {
     }
   },
 
+  layout(context) {
+    if (context.$auth && context.$auth.loggedIn) {
+      return 'auth'
+    }
+    return 'default'
+  },
+
   
   components:{
     Story

@@ -69,11 +69,9 @@
         { text: 'Published Story', icon: 'mdi-plus-box-multiple', route: '/auth/story/published' },
         { text: 'Draft Story', icon: 'mdi-plus-box-multiple-outline',  route: '/auth/story/draft' },
         { text: 'My Profile', icon: 'mdi-account', route: '/auth/profile' },
+        { text: 'Change Password', icon: 'mdi-account', route: '/auth/change-password' },
       ],
     }),
-
-    mounted(){
-    },
 
     methods: {
       async _logout(){

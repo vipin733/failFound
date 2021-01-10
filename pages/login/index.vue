@@ -54,7 +54,6 @@
 </template>
 <script>
 
-import DialogStep from '~/lib/DialogStep'
 import errorMessage from '~/lib/errors'
 import  _isValid  from '~/lib/validateFunc'
 import  _changeError  from '~/lib/_changeError'

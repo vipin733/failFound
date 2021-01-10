@@ -80,7 +80,13 @@ export default {
     // Doc: https://github.com/nuxt/content
     '@nuxt/content',
     '@nuxtjs/auth',
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    // 'vue-social-sharing/nuxt'
+    ['vue-social-sharing/nuxt', {
+      networks: {
+        fakeblock: 'https://fakeblock.com/share?url=@url&title=@title'
+      }
+    }],
     
   ],
   
@@ -140,5 +146,11 @@ export default {
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
+  },
+
+  watchers: {
+    webpack: {
+      poll: true
+    }
   }
 }

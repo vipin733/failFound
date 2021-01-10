@@ -77,7 +77,11 @@ export default {
     },
 
     _isError(){
-      return this.$store.getters.isError
+      let data = this.$store.getters.error
+      if (data.message) {
+        return true
+      }
+      return false
     }
   },
 }

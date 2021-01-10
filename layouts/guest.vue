@@ -73,11 +73,11 @@ export default {
     },
 
     _isError(){
-        let data = this.$store.getters.error
-        if (data.message) {
-            return true
-        }
-        return false
+      let data = this.$store.getters.error
+      if (data.message) {
+          return true
+      }
+      return false
     }
   },
 }

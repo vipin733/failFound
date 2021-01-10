@@ -22,7 +22,7 @@
         <StoryLoader/>
       </v-col>
     </v-row>
-
+    <NoData v-if="!isLoading &&  stories.length == 0"/>
     <DialogPopUP/>
  </div>
 </template>
@@ -61,7 +61,8 @@ export default {
     async _getStories(){
       try {
         let res = await this.$axios.get('/api/v1/stories')
-        this.stories = res.data.data
+        // console.log(res)
+        this.stories = res.data.data ?? []
         this.isLoading  = false
       } catch (error) {
         

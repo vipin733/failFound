@@ -33,7 +33,7 @@
                 @click="save(StoryStatus.Published)" 
                 block
                 v-if="!isLoging" 
-              >Create</v-btn>
+              >Published</v-btn>
               <br>
               <v-btn
                 bottom
@@ -166,7 +166,7 @@ export default {
     // console.log(this.$auth.getToken('local'))
     this.myEditor()
   }
-};
+}
 </script>
 
 <style lang="css" scoped >
